@@ -1,30 +1,57 @@
+using FluentAssertions;
+using ScoreBoard.Models;
+using ScoreBoard.Services;
+
 namespace ScoreBoard.Tests;
 
-public class StartNewMatchTests
+public class StartNewMatchTests()
 {
-    private readonly IMatchService _matchService;
-
-    public StartNewMatchTests(IMatchService matchService)
+    public static IEnumerable<object[]> GetTeamsDataWithInvalidSidesGenerator()
     {
-        _matchService = matchService;
+        yield return new object[] 
+        {
+            new Team() {TeamName = "Mexico", TeamSide = TeamSides.AwayTeam},
+            new Team() {TeamName = "Canada", TeamSide = TeamSides.AwayTeam},
+        };
+        yield return new object[]
+        {
+            new Team() {TeamName = "Mexico", TeamSide = TeamSides.HomeTeam},
+            new Team() {TeamName = "Canada", TeamSide = TeamSides.HomeTeam},
+        };
+    } 
+    
+    public static IEnumerable<object[]> GetTeamsDataWithSameNamesGenerator()
+    {
+        yield return new object[] 
+        {
+            new Team() {TeamName = "Mexico", TeamSide = TeamSides.AwayTeam},
+            new Team() {TeamName = "Mexico", TeamSide = TeamSides.AwayTeam},
+        };
+    } 
+    
+    [Theory]
+    [MemberData(nameof(GetTeamsDataWithInvalidSidesGenerator))]
+    public void InitMatch_NotInitialized_ReturnsNotTwoSameTeamSidesErrorMessage(Team firstTeam, Team secondTeam)
+    {
+        //Arrange
+        var matchService = new MatchService();
+        
+        // Act
+        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
+        //Assert
+        action.Should().ThrowExactly<ArgumentException>().WithMessage("Two teams can't have the same sides.");
     }
     
-    [Fact]
     [Theory]
-    [InlineData("Mexico","Canada")]
-    [InlineData("Spain","Brazil")]
-    [InlineData("Germany","France")]
-    [InlineData("Uruguay","Italy")]
-    [InlineData("Argentina","Australia")]
-    public void InitMatch_NotInited_ReturnsNullOrEmptyTeamError(string firstTeam, string secondTeam)
+    [MemberData(nameof(GetTeamsDataWithSameNamesGenerator))]
+    public void InitMatch_NotInitialized_ReturnsNotTwoSameTeamNamesErrorMessage(Team firstTeam, Team secondTeam)
     {
         // Arrange
-        var initedMatches = matchService.InitedMatches;
+        var matchService = new MatchService();
         
-        //Act
-        var errorMessage = matchService.InitMatch(firstTeam, secondTeam);
-
+        // Act
+        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
         //Assert
-        Assert.False(errorMessage, "One ot more teams can't be empty");
+        action.Should().ThrowExactly<ArgumentException>().WithMessage("Two teams can't have the same names.");
     }
 }

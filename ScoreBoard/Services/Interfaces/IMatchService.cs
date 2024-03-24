@@ -1,6 +1,8 @@
+using ScoreBoard.Models;
+
 namespace ScoreBoard.Services.Interfaces;
 
 public interface IMatchService
 {
-    public void InitMatch(string firstTeam, string secondTeam);
+    public Match InitMatch(Team homeTeam, Team awayTeam);
 }
