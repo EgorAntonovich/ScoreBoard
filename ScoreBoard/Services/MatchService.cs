@@ -17,7 +17,15 @@ public class MatchService : IMatchService
         {
             throw new ArgumentException("Two teams can't have the same sides.");
         }
+
+        Match newMatch = new Match()
+        {
+            HomeTeam = homeTeam,
+            AwayTeam = awayTeam,
+        };
         
-        throw new NotImplementedException();
+        ScoreBoard.Add(newMatch);
+
+        return newMatch;
     }
 }
