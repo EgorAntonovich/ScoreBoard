@@ -53,38 +53,6 @@ public class StartNewMatchTests()
         };
     }
     
-    public static IEnumerable<object[]> GetTeamsDataWithValidData()
-    {
-        yield return new object[] 
-        {
-            new Team()
-            {
-                TeamName = "Mexico",
-                TeamSide = TeamSides.AwayTeam
-            },
-            new Team()
-            {
-                TeamName = "Canada",
-                TeamSide = TeamSides.HomeTeam
-            },
-            1
-        };
-        yield return new object[]
-        {
-            new Team()
-            {
-                TeamName = "Spin",
-                TeamSide = TeamSides.AwayTeam
-            },
-            new Team()
-            {
-                TeamName = "Brazil",
-                TeamSide = TeamSides.HomeTeam
-            },
-            2
-        };
-    } 
-    
     [Theory]
     [MemberData(nameof(GetTeamsDataWithInvalidSidesGenerator))]
     public void InitMatch_NotInitialized_ReturnsNotTwoSameTeamSidesErrorMessage(Team firstTeam, Team secondTeam)
