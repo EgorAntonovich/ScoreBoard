@@ -50,6 +50,20 @@ public class ScoreBoardService : IScoreBoardService
         return ScoreBoard[matchForUpdateIndex];
     }
 
+    public Match FinishMatch(Team homeTeam, Team awayTeam)
+    {
+        var matchIndexForFinish = GetMatchIndexByTeamsName(homeTeam.TeamName, awayTeam.TeamName);
+
+        if (matchIndexForFinish == -1)
+        {
+            throw new Exception("There is not such match for finish.");
+        }
+
+        ScoreBoard[matchIndexForFinish].MatchStatus = MatchStatuses.Completed;
+
+        return ScoreBoard[matchIndexForFinish];
+    }
+
     private int GetMatchIndexByTeamsName(string homeTeamName, string awayTeamName)
     {
         return ScoreBoard
