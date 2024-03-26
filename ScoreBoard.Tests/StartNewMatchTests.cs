@@ -6,7 +6,7 @@ namespace ScoreBoard.Tests;
 
 public class StartNewMatchTests()
 {
-    public static IEnumerable<object[]> GetTeamsDataWithInvalidSidesGenerator()
+    public static IEnumerable<object[]> GetTeamsDataWithSameSidesGenerator()
     {
         yield return new object[] 
         {
@@ -43,7 +43,7 @@ public class StartNewMatchTests()
             new Team()
             {
                 TeamName = "Mexico",
-                TeamSide = TeamSides.AwayTeam
+                TeamSide = TeamSides.HomeTeam
             },
             new Team()
             {
@@ -53,12 +53,29 @@ public class StartNewMatchTests()
         };
     }
     
+    public static IEnumerable<object[]> GetTeamsDataWithInvalidSidesGenerator()
+    {
+        yield return new object[] 
+        {
+            new Team()
+            {
+                TeamName = "Mexico",
+                TeamSide = TeamSides.AwayTeam
+            },
+            new Team()
+            {
+                TeamName = "Spain",
+                TeamSide = TeamSides.HomeTeam
+            },
+        };
+    }
+    
     [Theory]
-    [MemberData(nameof(GetTeamsDataWithInvalidSidesGenerator))]
+    [MemberData(nameof(GetTeamsDataWithSameSidesGenerator))]
     public void InitMatch_NotInitialized_ReturnsNotTwoSameTeamSidesErrorMessage(Team firstTeam, Team secondTeam)
     {
         //Arrange
-        var matchService = new MatchService();
+        var matchService = new ScoreBoardService();
         
         // Act
         Action action = () => matchService.InitMatch(firstTeam, secondTeam);
@@ -72,7 +89,7 @@ public class StartNewMatchTests()
     public void InitMatch_NotInitialized_ReturnsNotTwoSameTeamNamesErrorMessage(Team firstTeam, Team secondTeam)
     {
         // Arrange
-        var matchService = new MatchService();
+        var matchService = new ScoreBoardService();
         
         // Act
         Action action = () => matchService.InitMatch(firstTeam, secondTeam);
@@ -80,12 +97,26 @@ public class StartNewMatchTests()
         //Assert
         action.Should().ThrowExactly<ArgumentException>().WithMessage("Two teams can't have the same names.");
     }
+    
+    [Theory]
+    [MemberData(nameof(GetTeamsDataWithInvalidSidesGenerator))]
+    public void InitMatch_NotInitialized_ReturnsArgumentExceptionInvalidTeamsSideMessage(Team firstTeam, Team secondTeam)
+    {
+        // Arrange
+        var matchService = new ScoreBoardService();
+        
+        // Act
+        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
+        
+        //Assert
+        action.Should().ThrowExactly<ArgumentException>().WithMessage("Invalid teams side. First argument should be home team and second - away team");
+    }
 
     [Fact]
     public void InitMatch_MatchInitialized_ReturnsCorrectMatch()
     {
         // Arrange
-        var matchService = new MatchService();
+        var scoreBoardService = new ScoreBoardService();
         
         var firstMatchAwayTeam = new Team()
         {
@@ -109,10 +140,9 @@ public class StartNewMatchTests()
             TeamSide = TeamSides.HomeTeam
         };
         
-        
         // Act
-        var firstMatch = matchService.InitMatch(firstMatchAwayTeam, firstMatchHomeTeam);
-        var secondMatch = matchService.InitMatch(secondMatchAwayTeam, secondMatchHomeTeam);
+        var firstMatch = scoreBoardService.InitMatch(firstMatchHomeTeam, firstMatchAwayTeam);
+        var secondMatch = scoreBoardService.InitMatch(secondMatchHomeTeam, secondMatchAwayTeam);
 
         // Assert
         firstMatch.MatchStatus.Should().Be(MatchStatuses.InProcess);
@@ -123,6 +153,6 @@ public class StartNewMatchTests()
         secondMatch.AwayTeam.TeamScore.Should().Be(0);
         secondMatch.HomeTeam.TeamScore.Should().Be(0);
         
-        matchService.ScoreBoard.Count.Should().Be(2);
+        scoreBoardService.ScoreBoard.Count.Should().Be(2);
     }
 }
