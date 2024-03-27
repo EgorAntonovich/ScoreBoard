@@ -1,3 +1,4 @@
+using ScoreBoard.Helpers;
 using ScoreBoard.Models;
 using ScoreBoard.Services.Interfaces;
 
@@ -62,6 +63,20 @@ public class ScoreBoardService : IScoreBoardService
         ScoreBoard[matchIndexForFinish].MatchStatus = MatchStatuses.Completed;
 
         return ScoreBoard[matchIndexForFinish];
+    }
+
+    public List<Match> GetSummaryOfMatches()
+    {
+        if (ScoreBoard.All(x => x.MatchStatus == MatchStatuses.Completed) || ScoreBoard.Count == 0)
+        {
+            throw new Exception("There are no any active matches.");
+        }
+        
+        var activeMatches = ScoreBoard.Where(x => x.MatchStatus == MatchStatuses.InProcess).ToList();
+        activeMatches.Sort(new MatchComparer());
+        activeMatches.Reverse();
+        
+        return activeMatches;
     }
 
     private int GetMatchIndexByTeamsName(string homeTeamName, string awayTeamName)
