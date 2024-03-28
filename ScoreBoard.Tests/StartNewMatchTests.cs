@@ -78,10 +78,12 @@ public class StartNewMatchTests()
         var matchService = new ScoreBoardService();
         
         // Act
-        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
+        var initMatchResult = matchService.InitMatch(firstTeam, secondTeam);
         
         //Assert
-        action.Should().ThrowExactly<ArgumentException>().WithMessage("Two teams can't have the same sides.");
+        initMatchResult.Data.Should().Be(null);
+        initMatchResult.Flag.Should().Be(false);
+        initMatchResult.Message.Should().Be("Two teams can't have the same sides.");
     }
     
     [Theory]
@@ -92,10 +94,12 @@ public class StartNewMatchTests()
         var matchService = new ScoreBoardService();
         
         // Act
-        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
+        var initMatchResult = matchService.InitMatch(firstTeam, secondTeam);
         
         //Assert
-        action.Should().ThrowExactly<ArgumentException>().WithMessage("Two teams can't have the same names.");
+        initMatchResult.Data.Should().Be(null);
+        initMatchResult.Flag.Should().Be(false);
+        initMatchResult.Message.Should().Be("Two teams can't have the same names.");
     }
     
     [Theory]
@@ -106,10 +110,12 @@ public class StartNewMatchTests()
         var matchService = new ScoreBoardService();
         
         // Act
-        Action action = () => matchService.InitMatch(firstTeam, secondTeam);
+        var initMatchResult =  matchService.InitMatch(firstTeam, secondTeam);
         
         //Assert
-        action.Should().ThrowExactly<ArgumentException>().WithMessage("Invalid teams side. First argument should be home team and second - away team");
+        initMatchResult.Data.Should().Be(null);
+        initMatchResult.Flag.Should().Be(false);
+        initMatchResult.Message.Should().Be("Invalid teams side. First argument should be home team and second - away team.");
     }
 
     [Fact]
@@ -141,17 +147,21 @@ public class StartNewMatchTests()
         };
         
         // Act
-        var firstMatch = scoreBoardService.InitMatch(firstMatchHomeTeam, firstMatchAwayTeam);
-        var secondMatch = scoreBoardService.InitMatch(secondMatchHomeTeam, secondMatchAwayTeam);
+        var firstMatchProcessResult = scoreBoardService.InitMatch(firstMatchHomeTeam, firstMatchAwayTeam);
+        var secondMatchProcessResult = scoreBoardService.InitMatch(secondMatchHomeTeam, secondMatchAwayTeam);
 
         // Assert
-        firstMatch.MatchStatus.Should().Be(MatchStatuses.InProcess);
-        firstMatch.AwayTeam.TeamScore.Should().Be(0);
-        firstMatch.HomeTeam.TeamScore.Should().Be(0);
+        firstMatchProcessResult.Data.MatchStatus.Should().Be(MatchStatuses.InProcess);
+        firstMatchProcessResult.Data.AwayTeam.TeamScore.Should().Be(0);
+        firstMatchProcessResult.Data.HomeTeam.TeamScore.Should().Be(0);
+        firstMatchProcessResult.Flag.Should().Be(true);
+        firstMatchProcessResult.Message.Should().Be("Match has been successfully created.");
         
-        secondMatch.MatchStatus.Should().Be(MatchStatuses.InProcess);
-        secondMatch.AwayTeam.TeamScore.Should().Be(0);
-        secondMatch.HomeTeam.TeamScore.Should().Be(0);
+        secondMatchProcessResult.Data.MatchStatus.Should().Be(MatchStatuses.InProcess);
+        secondMatchProcessResult.Data.AwayTeam.TeamScore.Should().Be(0);
+        secondMatchProcessResult.Data.HomeTeam.TeamScore.Should().Be(0);
+        secondMatchProcessResult.Flag.Should().Be(true);
+        secondMatchProcessResult.Message.Should().Be("Match has been successfully created.");
         
         scoreBoardService.ScoreBoard.Count.Should().Be(2);
     }

@@ -194,7 +194,7 @@ public class GetSummaryOfMatchesTests
 
     [Theory]
     [MemberData(nameof(GetMatchesGenerator))]
-    public void GetSummaryOfMatches_GetSummarySucceed_ScoreBoardListSortedCorrectly(List<Match> scoreBoard, List<Match> correctOrderedScreBoard)
+    public void GetSummaryOfMatches_GetSummarySucceed_ScoreBoardListSortedCorrectly(List<Match> scoreBoard, List<Match> correctOrderedScoreBoard)
     {
         // Arrange
         var scoreBoardService = new ScoreBoardService();
@@ -206,7 +206,7 @@ public class GetSummaryOfMatchesTests
         }
         var orderedScoreBoard = scoreBoardService.GetSummaryOfMatches();
         var matchComparer = new MatchEqualityComparer();
-        var compareResult = orderedScoreBoard.SequenceEqual(correctOrderedScreBoard, matchComparer);
+        var compareResult = orderedScoreBoard.SequenceEqual(correctOrderedScoreBoard, matchComparer);
 
         // Assert
         compareResult.Should().Be(true);

@@ -55,10 +55,12 @@ public class FinishMatchTests
 
         // Act
         scoreBoardService.InitMatch(homeTeam, awayTeam);
-        Action action = () => scoreBoardService.FinishMatch(firstTeam, secondTeam);
+        var processResult =  scoreBoardService.FinishMatch(firstTeam, secondTeam);
         
         // Assert
-        action.Should().ThrowExactly<Exception>().WithMessage("There is not such match for finish.");
+        processResult.Data.Should().Be(null);
+        processResult.Flag.Should().Be(false);
+        processResult.Message.Should().Be("There is not such match for finish.");
     }
     
     [Theory]
@@ -93,9 +95,11 @@ public class FinishMatchTests
         // Act
         scoreBoardService.InitMatch(firstHomeTeam, firstAwayTeam);
         scoreBoardService.InitMatch(secondHomeTeam, secondAwayTeam);
-        var finishedMatch = scoreBoardService.FinishMatch(firstTeam, secondTeam);
+        var processResult = scoreBoardService.FinishMatch(firstTeam, secondTeam);
         
         // Assert
-        finishedMatch.MatchStatus.Should().Be(MatchStatuses.Completed);
+        processResult.Data.MatchStatus.Should().Be(MatchStatuses.Completed);
+        processResult.Flag.Should().Be(true);
+        processResult.Message.Should().Be("Match has been successfully finished.");
     }
 }

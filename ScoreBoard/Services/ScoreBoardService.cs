@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+using Microsoft.Extensions.Logging;
 using ScoreBoard.Helpers;
 using ScoreBoard.Models;
 using ScoreBoard.Services.Interfaces;
@@ -7,22 +9,22 @@ namespace ScoreBoard.Services;
 public class ScoreBoardService : IScoreBoardService
 {
     public readonly List<Match> ScoreBoard = new List<Match>();
-    public Match InitMatch(Team homeTeam, Team awayTeam)
+    
+    public ProcessResult InitMatch(Team homeTeam, Team awayTeam)
     {
         if (homeTeam.TeamName == awayTeam.TeamName)
         {
-            throw new ArgumentException("Two teams can't have the same names.");
+            return new ProcessResult(false, "Two teams can't have the same names.", null);
         }
 
         if (homeTeam.TeamSide == awayTeam.TeamSide)
         {
-            throw new ArgumentException("Two teams can't have the same sides.");
+            return new ProcessResult(false, "Two teams can't have the same sides.", null);
         }
 
         if (homeTeam.TeamSide != TeamSides.HomeTeam || awayTeam.TeamSide != TeamSides.AwayTeam)
         {
-            throw new ArgumentException(
-                "Invalid teams side. First argument should be home team and second - away team");
+            return new ProcessResult(false, "Invalid teams side. First argument should be home team and second - away team.", null);
         }
 
         Match newMatch = new Match()
@@ -33,36 +35,36 @@ public class ScoreBoardService : IScoreBoardService
         
         ScoreBoard.Add(newMatch);
 
-        return newMatch;
+        return new ProcessResult(true, "Match has been successfully created.", newMatch);
     }
 
-    public Match UpdateMatch(Team homeTeam, Team awayTeam)
+    public ProcessResult UpdateMatch(Team homeTeam, Team awayTeam)
     {
         var matchForUpdateIndex = GetMatchIndexByTeamsName(homeTeam.TeamName, awayTeam.TeamName);
         
         if (matchForUpdateIndex == -1)
         {
-            throw new Exception("There is not such match.");
+            return new ProcessResult(false, "There is not such match.", null);
         }
         
         ScoreBoard[matchForUpdateIndex].HomeTeam.TeamScore = homeTeam.TeamScore;
         ScoreBoard[matchForUpdateIndex].AwayTeam.TeamScore = awayTeam.TeamScore;
 
-        return ScoreBoard[matchForUpdateIndex];
+        return new ProcessResult(true, "Match has been successfully updated.", ScoreBoard[matchForUpdateIndex]);
     }
 
-    public Match FinishMatch(Team homeTeam, Team awayTeam)
+    public ProcessResult FinishMatch(Team homeTeam, Team awayTeam)
     {
         var matchIndexForFinish = GetMatchIndexByTeamsName(homeTeam.TeamName, awayTeam.TeamName);
 
         if (matchIndexForFinish == -1)
         {
-            throw new Exception("There is not such match for finish.");
+            return new ProcessResult(false, "There is not such match for finish.", null);
         }
 
         ScoreBoard[matchIndexForFinish].MatchStatus = MatchStatuses.Completed;
 
-        return ScoreBoard[matchIndexForFinish];
+        return new ProcessResult(true, "Match has been successfully finished.", ScoreBoard[matchIndexForFinish]);
     }
 
     public List<Match> GetSummaryOfMatches()

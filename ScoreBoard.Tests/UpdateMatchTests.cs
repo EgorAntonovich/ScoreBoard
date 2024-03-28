@@ -59,10 +59,12 @@ public class UpdateMatchTests
         
         // Act
         scoreBoardService.InitMatch(homeTeam, awayTeam);
-        Action action = () => scoreBoardService.UpdateMatch(firstTeam, secondTeam);
+        var updateMatchResult = scoreBoardService.UpdateMatch(firstTeam, secondTeam);
 
         // Assert
-        action.Should().ThrowExactly<Exception>().WithMessage("There is not such match.");
+        updateMatchResult.Flag.Should().Be(false);
+        updateMatchResult.Data.Should().Be(null);
+        updateMatchResult.Message.Should().Be("There is not such match.");
     }
 
     [Theory]
@@ -98,10 +100,12 @@ public class UpdateMatchTests
         // Act
         scoreBoardService.InitMatch(firstHomeTeam, firstAwayTeam);
         scoreBoardService.InitMatch(secondHomeTeam, secondAwayTeam);
-        var updatedMatch = scoreBoardService.UpdateMatch(firstTeam, secondTeam);
+        var updatedMatchResult = scoreBoardService.UpdateMatch(firstTeam, secondTeam);
         
         // Assert
-        updatedMatch.HomeTeam.TeamScore.Should().Be(firstTeam.TeamScore);
-        updatedMatch.AwayTeam.TeamScore.Should().Be(secondTeam.TeamScore);
+        updatedMatchResult.Data.HomeTeam.TeamScore.Should().Be(firstTeam.TeamScore);
+        updatedMatchResult.Data.AwayTeam.TeamScore.Should().Be(secondTeam.TeamScore);
+        updatedMatchResult.Flag.Should().Be(true);
+        updatedMatchResult.Message.Should().Be("Match has been successfully updated.");
     }
 }
