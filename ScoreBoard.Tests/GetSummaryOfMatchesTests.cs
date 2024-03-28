@@ -1,6 +1,7 @@
 using FluentAssertions;
 using ScoreBoard.Models;
 using ScoreBoard.Services;
+using ScoreBoard.Tests.Helpers;
 
 namespace ScoreBoard.Tests;
 
@@ -25,7 +26,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 5
                     },
-                    MatchStartDate = new DateTime(2024,03,20),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -42,7 +42,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 2
                     },
-                    MatchStartDate = new DateTime(2024,03,15),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -59,7 +58,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 2
                     },
-                    MatchStartDate = new DateTime(2024,03,21),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -76,7 +74,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 6
                     },
-                    MatchStartDate = new DateTime(2024,03,10),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -93,7 +90,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 1
                     },
-                    MatchStartDate = new DateTime(2024,03,20),
                     MatchStatus = MatchStatuses.InProcess
                 },
             
@@ -113,7 +109,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 6
                     },
-                    MatchStartDate = new DateTime(2024,03,10),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -130,7 +125,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 2
                     },
-                    MatchStartDate = new DateTime(2024,03,15),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -147,8 +141,7 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 5
                     },
-                    MatchStartDate = new DateTime(2024,03,20),
-                    MatchStatus = MatchStatuses.InProcess
+                    MatchStatus = MatchStatuses.InProcess,
                 },
                 new Match()
                 {
@@ -164,7 +157,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 1
                     },
-                    MatchStartDate = new DateTime(2024,03,20),
                     MatchStatus = MatchStatuses.InProcess
                 },
                 new Match()
@@ -181,7 +173,6 @@ public class GetSummaryOfMatchesTests
                         TeamSide = TeamSides.HomeTeam,
                         TeamScore = 2
                     },
-                    MatchStartDate = new DateTime(2024,03,21),
                     MatchStatus = MatchStatuses.InProcess
                 },
             }
@@ -214,7 +205,8 @@ public class GetSummaryOfMatchesTests
             scoreBoardService.InitMatch(match.HomeTeam, match.AwayTeam);
         }
         var orderedScoreBoard = scoreBoardService.GetSummaryOfMatches();
-        var compareResult = orderedScoreBoard.SequenceEqual(correctOrderedScreBoard);
+        var matchComparer = new MatchEqualityComparer();
+        var compareResult = orderedScoreBoard.SequenceEqual(correctOrderedScreBoard, matchComparer);
 
         // Assert
         compareResult.Should().Be(true);
