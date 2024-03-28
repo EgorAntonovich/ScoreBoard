@@ -1,7 +1,6 @@
-using System.Reflection.Metadata;
-using Microsoft.Extensions.Logging;
 using ScoreBoard.Helpers;
 using ScoreBoard.Models;
+using ScoreBoard.Models.Enums;
 using ScoreBoard.Services.Interfaces;
 
 namespace ScoreBoard.Services;

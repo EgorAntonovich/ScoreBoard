@@ -1,4 +1,4 @@
-namespace ScoreBoard.Models;
+namespace ScoreBoard.Models.Enums;
 
 public enum TeamSides
 {

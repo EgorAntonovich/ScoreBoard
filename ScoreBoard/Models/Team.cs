@@ -1,3 +1,5 @@
+using ScoreBoard.Models.Enums;
+
 namespace ScoreBoard.Models;
 
 public class Team

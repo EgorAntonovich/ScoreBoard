@@ -1,5 +1,6 @@
 using FluentAssertions;
 using ScoreBoard.Models;
+using ScoreBoard.Models.Enums;
 using ScoreBoard.Services;
 using ScoreBoard.Tests.Helpers;
 
