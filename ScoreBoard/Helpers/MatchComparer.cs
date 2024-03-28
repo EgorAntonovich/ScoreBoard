@@ -4,16 +4,11 @@ namespace ScoreBoard.Helpers;
 
 public class MatchComparer : IComparer<Match>
 {
-    public int Compare(Match firstMatch, Match secondMatch)
+    public int Compare(Match? x, Match? y)
     {
-        int firstMatchTotalScore = firstMatch.AwayTeam.TeamScore + firstMatch.HomeTeam.TeamScore;
-        int secondMatchTotalScore = secondMatch.AwayTeam.TeamScore + secondMatch.HomeTeam.TeamScore;
-
-        if (firstMatchTotalScore != secondMatchTotalScore)
-        {
-            return firstMatchTotalScore.CompareTo(secondMatchTotalScore);
-        }
-
-        return firstMatch.MatchStartDate.CompareTo(secondMatch.MatchStartDate);
+        var xTeamTotalScore = x.AwayTeam.TeamScore + x.HomeTeam.TeamScore;
+        var yTeamTotalScore = y.AwayTeam.TeamScore + y.HomeTeam.TeamScore;
+        
+        return xTeamTotalScore == yTeamTotalScore ? x.MatchSequenceIndex.CompareTo(y.MatchSequenceIndex) : xTeamTotalScore.CompareTo(yTeamTotalScore);
     }
 }
